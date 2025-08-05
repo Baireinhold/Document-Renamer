@@ -1,0 +1,122 @@
+# 智能文档重命名工具 v2.0 - 主配置文件
+
+# AI服务配置
+ai_service:
+  provider: "deepseek"
+  api_key: "${AI_API_KEY}"
+  api_url: "${AI_API_URL}"
+  model: "${AI_MODEL}"
+  timeout: 30
+  max_retries: 3
+  retry_delay: 2
+
+# 文档类型检测
+document_detection:
+  enabled: true
+  book_keywords:
+    - "出版社"
+    - "ISBN"
+    - "版权"
+    - "publisher"
+    - "copyright"
+    - "edition"
+  paper_keywords:
+    - "期刊"
+    - "journal"
+    - "conference"
+    - "proceedings"
+    - "volume"
+    - "issue"
+    - "doi"
+  default_type: "${DEFAULT_DOCUMENT_TYPE}"
+
+# 书籍处理配置
+book_processing:
+  extract_fields:
+    title: true
+    author: true
+    publisher: true
+    year: true
+    isbn: false
+    language: true
+    subtitle: false
+  
+  naming_templates:
+    default: "{title} - {author} ({year})"
+    simple: "{title} - {author}"
+    detailed: "{author} - {title} - {publisher} ({year})"
+    academic: "[{year}] {author} - {title}"
+    custom: "${BOOK_NAMING_PATTERN}"
+  
+  active_template: "custom"
+  
+  translation:
+    enabled: false
+    target_language: "${TRANSLATION_TARGET}"
+    translate_title: false
+    translate_author: false
+    translate_publisher: false
+    keep_original_brackets: true
+
+# 论文处理配置  
+paper_processing:
+  extract_fields:
+    title: true
+    author: true
+    journal: true
+    year: true
+    volume: false
+    issue: false
+    pages: false
+    doi: false
+  
+  naming_templates:
+    default: "{title} - {author} ({year})"
+    journal_first: "{journal} - {title} - {author} ({year})"
+    academic: "[{year}] {author} - {title} - {journal}"
+    simple: "{title} - {author}"
+    custom: "${PAPER_NAMING_PATTERN}"
+  
+  active_template: "custom"
+  
+  translation:
+    enabled: false
+    target_language: "${TRANSLATION_TARGET}"
+    translate_title: false
+    translate_author: false
+    translate_journal: false
+    keep_original_brackets: true
+
+# 文本提取配置
+text_extraction:
+  max_pages: 10
+  engines:
+    - "pdfplumber"
+    - "pypdf2"
+  min_text_length: 100
+  cleaning:
+    remove_page_numbers: true
+    remove_headers_footers: true
+    remove_empty_lines: true
+    min_line_length: 3
+    remove_special_chars: false
+
+# 处理流程配置
+processing:
+  batch_size: 5
+  batch_delay: 1
+  concurrent_requests: 2
+  backup_original: true
+  skip_existing: true
+  dry_run: false
+  min_confidence: 0.5
+  require_all_fields: false
+
+# 日志配置
+logging:
+  level: "INFO"
+  file: "data/logs/app.log"
+  max_size_mb: 50
+  backup_count: 5
+  console_output: true
+  file_output: true
